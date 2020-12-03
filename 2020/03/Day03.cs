@@ -14,12 +14,11 @@ namespace AOC.Y2020
 
         protected override int RunPart1()
         {
-            return TraversedTrees(this.ParsedInput.ToArray(), (1, 3)).Count();
+            return TraversedTrees(this.ParsedInput, (1, 3)).Count();
         }
 
         protected override int RunPart2()
         {
-            var matrix = this.ParsedInput.ToArray();
             var steps = new List<(int, int)>()
             {
                 (1, 1),
@@ -30,7 +29,7 @@ namespace AOC.Y2020
             };
 
             return steps
-                .Select(step => TraversedTrees(matrix, step).Count())
+                .Select(step => TraversedTrees(this.ParsedInput, step).Count())
                 .Aggregate(1, (aggregate, result) => aggregate * result);
         }
     }

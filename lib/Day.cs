@@ -27,7 +27,7 @@ namespace AOC
         public string DayName { get; }
         public IEnumerable<string> RawInput { get; protected set; }
         public bool HasParsedInput { get; protected set; }
-        public IEnumerable<Tin> ParsedInput { get; protected set; }
+        public Tin[] ParsedInput { get; protected set; }
         public Tout ExpectedTest1Result { get; set; }
         public Tout ExpectedTest2Result { get; set; }
 
@@ -86,7 +86,7 @@ namespace AOC
             var converter = TypeConverter<Tin>();
             if (converter != null)
             {
-                this.ParsedInput = this.RawInput.Select(converter);
+                this.ParsedInput = this.RawInput.Select(converter).ToArray();
                 return true;
             }
             return false;

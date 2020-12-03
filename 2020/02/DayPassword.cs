@@ -11,7 +11,7 @@ namespace AOC.Y2020
 
         protected override bool TryParseInput()
         {
-            this.ParsedInput = this.RawInput.Select(PasswordCheckParser.Parse);
+            this.ParsedInput = this.RawInput.Select(PasswordCheckParser.Parse).ToArray();
             return true;
         }
     }

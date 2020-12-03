@@ -29,8 +29,8 @@ namespace AOC.Y2020
         protected static HashSet<(int row, int column)> Traverse(bool[][] matrix, (int row, int column) step)
         {
             var points = new HashSet<(int row, int column)>();
-            var height = matrix.Count();
-            var width = matrix.First().Count();
+            var height = matrix.Length;
+            var width = matrix[0].Length;
             (int row, int column) position = (0, 0);
 
             do
