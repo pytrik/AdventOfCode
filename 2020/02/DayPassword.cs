@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace AOC.Y2020
 {
-    public abstract class DayPassword<Tout> : AOC.Y2020.Day<PasswordCheck, Tout>
+    public abstract class DayPassword : AOC.Y2020.Day<PasswordCheck, int>
     {
         public DayPassword(string day) : base(day)
         {

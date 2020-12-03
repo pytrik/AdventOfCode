@@ -2,7 +2,7 @@ using System.Linq;
 
 namespace AOC.Y2020
 {
-    public class Day02 : DayPassword<int>
+    public class Day02 : DayPassword
     {
         public Day02() : base("02")
         {
