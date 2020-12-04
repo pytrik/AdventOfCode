@@ -20,6 +20,8 @@ namespace AOC.Y2020
 
         public bool IsValid(Passport passport)
         {
+            if (!this.IsRequired)
+                return true;
             return passport.ContainsKey(this.Key) &&
                    this.IsValid(passport[this.Key]);
         }
@@ -67,7 +69,7 @@ namespace AOC.Y2020
     {
         public PassportHeight() : base("hgt", "Height") { }
 
-        private static readonly Regex height = new Regex(@"(?<value>\d+)(?<unit>(?:cm|in))", RegexOptions.Compiled);
+        private static readonly Regex height = new Regex(@"^(?<value>\d+)(?<unit>(?:cm|in))$", RegexOptions.Compiled);
         public override bool IsValid(string input)
         {
             var groups = height.Match(input).Groups;
@@ -83,7 +85,7 @@ namespace AOC.Y2020
     {
         public PassportHairColor() : base("hcl", "Hair Color") { }
 
-        private static readonly Regex hairColor = new Regex(@"#[0-9a-f]{6}", RegexOptions.Compiled);
+        private static readonly Regex hairColor = new Regex(@"^#[0-9a-f]{6}$", RegexOptions.Compiled);
         public override bool IsValid(string input)
         {
             return hairColor.IsMatch(input);
@@ -105,7 +107,7 @@ namespace AOC.Y2020
     {
         public PassportID() : base("pid", "Passport ID") { }
 
-        private static readonly Regex passportId = new Regex(@"[0-9]{9}", RegexOptions.Compiled);
+        private static readonly Regex passportId = new Regex(@"^[0-9]{9}$", RegexOptions.Compiled);
         public override bool IsValid(string input)
         {
             return passportId.IsMatch(input);
