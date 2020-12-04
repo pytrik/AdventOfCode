@@ -93,6 +93,12 @@ namespace AOC
             return false;
         }
 
+        protected void WriteOutputFile(string file, string data)
+        {
+            var path = $"./{this.Year}/{this.DayName}/{file}";
+            File.WriteAllText(path, data);
+        }
+
         protected string GetInputFileContent(string file)
         {
             var path = $"./{this.Year}/{this.DayName}/{file}";

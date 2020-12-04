@@ -89,5 +89,20 @@ namespace AOC.Y2020
                 return false;
             return value >= lower && value <= upper;
         }
+
+        public override string ToString()
+        {
+            return $"Passport, fields {this.HasRequiredFields()}, values {this.ToCSV()}";
+        }
+
+        public string ToCSV()
+        {
+            var values = new List<string>() { this.HasValidValues().ToString() };
+            foreach (var key in required.Select(r => r.Key))
+            {
+                values.Add(this.ContainsKey(key) ? this[key] : "");
+            }
+            return string.Join(",", values);
+        }
     }
 }

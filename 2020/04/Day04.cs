@@ -19,6 +19,7 @@ namespace AOC.Y2020
 
         protected override int RunPart2()
         {
+            this.WriteOutputFile("out.csv", string.Join("\n", this.ParsedInput.Select(i => i.ToCSV())));
             return this.ParsedInput.Count(i => i.HasValidValues());
         }
     }
