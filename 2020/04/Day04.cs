@@ -9,7 +9,7 @@ namespace AOC.Y2020
         public Day04() : base("04")
         {
             this.ExpectedTest1Result = 2;
-            this.ExpectedTest2Result = 4;
+            this.ExpectedTest2Result = 8;
         }
 
         protected override int RunPart1()

@@ -60,16 +60,15 @@ namespace AOC.Y2020
             return $"Passport, fields {this.HasRequiredFields()}, values {this.ToCSV()}";
         }
 
+        private static string BoolAsString(bool input) => input ? "WAAR" : "ONWAAR";
         public string ToCSV()
         {
             var values = new List<string>() {
-                this.HasRequiredFields().ToString(),
-                this.HasValidFields().ToString()
+                BoolAsString(this.HasRequiredFields()),
+                BoolAsString(this.HasValidFields())
             };
-            foreach (var key in fields.Select(f => f.Key))
-            {
-                values.Add(this.ContainsKey(key) ? this[key] : "");
-            }
+            foreach (var field in fields)
+                values.AddRange(new[] { this.ContainsKey(field.Key) ? this[field.Key] : "", BoolAsString(field.IsValid(this)) });
             return string.Join(",", values);
         }
     }
