@@ -31,63 +31,28 @@ namespace AOC.Y2020
 
     public class Passport : Dictionary<string, string>
     {
-        private Dictionary<string, Func<string, bool>> required = new()
+        private static List<PassportField> fields = new()
         {
-            { "byr", (string input) => InputIsIntegerBetween(input, 1920, 2002) },
-            { "ecl", IsValidEyeColor },
-            { "eyr", (string input) => InputIsIntegerBetween(input, 2020, 2030) },
-            { "hcl", IsValidHairColor },
-            { "hgt", IsValidHeight },
-            { "iyr", (string input) => InputIsIntegerBetween(input, 2010, 2020) },
-            { "pid", IsValidPassportID }
+            new PassportBirthYear(),
+            new PassportIssueYear(),
+            new PassportExpirationYear(),
+            new PassportHeight(),
+            new PassportHairColor(),
+            new PassportEyeColor(),
+            new PassportID(),
+            new PassportCountryID()
         };
 
         public bool HasRequiredFields()
         {
-            return required.All(req => this.ContainsKey(req.Key));
+            return fields
+                .Where(field => field.IsRequired)
+                .All(field => this.ContainsKey(field.Key));
         }
 
-        public bool HasValidValues()
+        public bool HasValidFields()
         {
-            return this.HasRequiredFields() &&
-                   required.All(req => req.Value(this[req.Key]));
-        }
-
-        private static readonly Regex height = new Regex(@"(?<value>\d+)(?<unit>(?:cm|in))", RegexOptions.Compiled);
-        private static bool IsValidHeight(string input)
-        {
-            var groups = height.Match(input).Groups;
-            if (groups["unit"].Value == "cm")
-                return InputIsIntegerBetween(groups["value"].Value, 150, 193);
-            else if (groups["unit"].Value == "in")
-                return InputIsIntegerBetween(groups["value"].Value, 59, 76);
-            return false;
-        }
-
-        private static readonly Regex hairColor = new Regex(@"#[0-9a-f]{6}", RegexOptions.Compiled);
-        private static bool IsValidHairColor(string input)
-        {
-            return hairColor.IsMatch(input);
-        }
-
-        private static readonly HashSet<string> eyeColors = new() { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" };
-        private static bool IsValidEyeColor(string input)
-        {
-            return eyeColors.Contains(input);
-        }
-
-        private static readonly Regex passportId = new Regex(@"[0-9]{9}", RegexOptions.Compiled);
-        private static bool IsValidPassportID(string input)
-        {
-            return passportId.IsMatch(input);
-        }
-
-        private static bool InputIsIntegerBetween(string input, int lower, int upper)
-        {
-            int value;
-            if (!int.TryParse(input, out value))
-                return false;
-            return value >= lower && value <= upper;
+            return fields.All(field => field.IsValid(this));
         }
 
         public override string ToString()
@@ -97,8 +62,11 @@ namespace AOC.Y2020
 
         public string ToCSV()
         {
-            var values = new List<string>() { this.HasValidValues().ToString() };
-            foreach (var key in required.Select(r => r.Key))
+            var values = new List<string>() {
+                this.HasRequiredFields().ToString(),
+                this.HasValidFields().ToString()
+            };
+            foreach (var key in fields.Select(f => f.Key))
             {
                 values.Add(this.ContainsKey(key) ? this[key] : "");
             }
