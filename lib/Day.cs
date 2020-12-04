@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AOC
 {
@@ -92,14 +93,25 @@ namespace AOC
             return false;
         }
 
-        protected void SetInputFrom(string file)
+        protected string GetInputFileContent(string file)
         {
-            var success = false;
             var path = $"./{this.Year}/{this.DayName}/{file}";
-
             if (File.Exists(path))
             {
-                this.RawInput = File.ReadAllLines(path)
+                return File.ReadAllText(path);
+            }
+
+            return null;
+        }
+
+        protected Regex split = new Regex(@"(?:\r?\n|\r\n?)", RegexOptions.Compiled);
+        protected virtual void SetInputFrom(string file)
+        {
+            var content = GetInputFileContent(file);
+            var success = false;
+            if (content != null)
+            {
+                this.RawInput = split.Split(content)
                     .Where(line => !string.IsNullOrEmpty(line));
                 success = TryParseInput();
             }
