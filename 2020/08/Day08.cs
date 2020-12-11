@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AOC.Y2020
 {
-    public class Day08 : Day<Instruction, int>
+    public class Day08 : Day<Instruction, long>
     {
         public Day08() : base("08")
         {
@@ -18,7 +18,7 @@ namespace AOC.Y2020
             return true;
         }
 
-        protected override int RunPart1()
+        protected override long RunPart1()
         {
             var runner = new ProgramRunner(this.ParsedInput);
             try
@@ -27,12 +27,12 @@ namespace AOC.Y2020
             }
             catch (ProgramHasInfiniteLoopException ex)
             {
-                return (int)ex.AccumulatorValue;
+                return ex.AccumulatorValue;
             }
             return 0;
         }
 
-        protected override int RunPart2()
+        protected override long RunPart2()
         {
             var runner = new ProgramRunner(this.ParsedInput);
             try
@@ -60,7 +60,7 @@ namespace AOC.Y2020
                     try
                     {
                         runner = new ProgramRunner(program);
-                        return (int)runner.All();
+                        return runner.All();
                     }
                     catch (ProgramHasInfiniteLoopException) { }
                 }
