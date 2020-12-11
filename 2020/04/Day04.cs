@@ -12,7 +12,7 @@ namespace AOC.Y2020
             this.ExpectedTest1Result = 2;
             this.ExpectedTest2Result = 8;
 
-            this.split = new Regex(@"(?:\r\n){2}", RegexOptions.Compiled);
+            this.InputFormat = SplitInput.ByEmptyLine;
         }
 
         protected override int RunPart1()

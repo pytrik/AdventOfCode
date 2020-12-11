@@ -14,11 +14,11 @@ namespace AOC.Y2020
             this.ExpectedTest2Result = 126;
         }
 
-        protected override void SetParsedInput()
+        protected override Bag[] ParseInput(IEnumerable<string> raw)
         {
             this.Graph = new BagsGraph();
-            this.Graph.Build(this.RawInput);
-            this.ParsedInput = this.Graph.AsArray();
+            this.Graph.Build(raw);
+            return this.Graph.AsArray();
         }
 
         protected override int RunPart1()

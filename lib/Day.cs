@@ -2,12 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace AOC
 {
-    public abstract class Day<Tin, Tout>
+    public enum SplitInput
+    {
+        ByNewLine,
+        ByEmptyLine
+    }
+
+    public abstract class Day<Tin, Tout> : IDay
     {
         protected Day(string year, string day)
         {
@@ -27,7 +31,6 @@ namespace AOC
 
         public string Year { get; }
         public string DayName { get; }
-        public IEnumerable<string> RawInput { get; protected set; }
         public Tin[] ParsedInput { get; protected set; }
         public Tout ExpectedTest1Result { get; set; }
         public Tout ExpectedTest2Result { get; set; }
@@ -56,6 +59,16 @@ namespace AOC
             };
         }
 
+        IEnumerable<object> IDay.RunTests()
+        {
+            return this.RunTests();
+        }
+
+        IEnumerable<object> IDay.Run()
+        {
+            return this.Run();
+        }
+
         private Tout TryRunPart(int partNr)
         {
             try
@@ -76,10 +89,10 @@ namespace AOC
         protected abstract Tout RunPart1();
         protected abstract Tout RunPart2();
 
-        protected virtual void SetParsedInput()
+        protected virtual Tin[] ParseInput(IEnumerable<string> raw)
         {
-            var converter = TypeConverter<Tin>();
-            this.ParsedInput = this.RawInput.Select(converter).ToArray();
+            var converter = StringConverter.ToType<Tin>();
+            return raw.Select(converter).ToArray();
         }
 
         protected void WriteOutputFile(string file, string data)
@@ -88,56 +101,40 @@ namespace AOC
             File.WriteAllText(path, data);
         }
 
-        protected string GetInputFileContent(string file)
+        protected string[] GetInputFileLines(string file)
         {
             var path = $"./{this.Year}/{this.DayName}/{file}";
             if (File.Exists(path))
             {
-                return File.ReadAllText(path);
+                return File.ReadAllLines(path);
             }
 
             return null;
         }
 
-        protected Regex split = new Regex(@"(?:\r?\n|\r\n?)", RegexOptions.Compiled);
-        protected virtual void SetInputFrom(string file)
+        protected SplitInput InputFormat { get; set; } = SplitInput.ByNewLine;
+        protected void SetInputFrom(string file)
         {
-            var content = GetInputFileContent(file);
-            if (content != null)
+            var lines = this.GetInputFileLines(file);
+            IEnumerable<string> raw = null;
+            if (lines != null)
             {
-                this.RawInput = split.Split(content)
-                    .Where(line => !string.IsNullOrEmpty(line));
-                SetParsedInput();
-            }
-        }
+                if (this.InputFormat == SplitInput.ByNewLine)
+                    raw = lines;
+                else if (this.InputFormat == SplitInput.ByEmptyLine)
+                    raw = lines
+                        .Aggregate(new List<List<string>>() { new List<string>() }, (list, line) =>
+                        {
+                            if (string.IsNullOrWhiteSpace(line))
+                                list.Add(new List<string>());
+                            else
+                                list.Last().Add(line);
+                            return list;
+                        })
+                        .Select(lines => string.Join(Environment.NewLine, lines));
 
-        protected bool IsValueType<T>() => typeof(T).IsValueType;
-        protected Func<object, T> TypeConverter<T>()
-        {
-            if (Nullable.GetUnderlyingType(typeof(T)) != null)
-            {
-                System.ComponentModel.TypeConverter converter = System.ComponentModel.TypeDescriptor.GetConverter(typeof(T));
-                return (value) => (T)converter.ConvertFrom(value);
-            }
-            else if (this.IsValueType<T>())
-            {
-                return (value) => (T)Convert.ChangeType(value, typeof(T));
-            }
-            else
-            {
-                var type = typeof(T);
-                var converterMethod = type.GetMethods(BindingFlags.Static | BindingFlags.Public)
-                    .Where(method => method.Name == "Parse")
-                    .SingleOrDefault(method =>
-                    {
-                        var parameters = method.GetParameters();
-                        return parameters.Length == 1 && parameters.First().ParameterType == typeof(string);
-                    });
-
-                if (converterMethod == null)
-                    throw new NoConverterFoundException($"Could not find a public static method on type '{type}' with name 'Parse' that accepts exactly 1 argument of type string");
-
-                return (value) => (T)converterMethod.Invoke(null, new[] { value });
+                raw = raw.Where(line => !string.IsNullOrEmpty(line));
+                this.ParsedInput = this.ParseInput(raw);
             }
         }
 

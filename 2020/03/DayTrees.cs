@@ -59,9 +59,9 @@ namespace AOC.Y2020
             return Traverse(matrix, step).Intersect(trees);
         }
 
-        protected override void SetParsedInput()
+        protected override bool[][] ParseInput(IEnumerable<string> raw)
         {
-            this.ParsedInput = this.RawInput.Select(line => line.Select(ch => ch == '#').ToArray()).ToArray();
+            return this.ParsedInput = raw.Select(line => line.Select(ch => ch == '#').ToArray()).ToArray();
         }
     }
 }
