@@ -4,19 +4,6 @@ using System.Collections.Generic;
 
 namespace AOC.Y2020
 {
-    public abstract class DaySeating : AOC.Y2020.Day<Seat, int>
-    {
-        public DaySeating(string day) : base(day)
-        {
-        }
-
-        protected override bool TryParseInput()
-        {
-            this.ParsedInput = this.RawInput.Select(Seat.FromString).ToArray();
-            return true;
-        }
-    }
-
     public class Seat
     {
         public int Row { get; protected set; }
@@ -28,7 +15,7 @@ namespace AOC.Y2020
             return input.Aggregate(0, (row, ch) => (row << 1) | (ch == oneBit ? 1 : 0));
         }
 
-        public static Seat FromString(string input)
+        public static Seat Parse(string input)
         {
             return new Seat()
             {

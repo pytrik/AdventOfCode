@@ -4,12 +4,21 @@ using System.Collections.Generic;
 
 namespace AOC.Y2020
 {
-    public class Day07 : DayBags
+    public class Day07 : AOC.Y2020.Day<Bag, int>
     {
+        protected BagsGraph Graph { get; set; }
+
         public Day07() : base("07")
         {
             this.ExpectedTest1Result = 4;
             this.ExpectedTest2Result = 126;
+        }
+
+        protected override void SetParsedInput()
+        {
+            this.Graph = new BagsGraph();
+            this.Graph.Build(this.RawInput);
+            this.ParsedInput = this.Graph.AsArray();
         }
 
         protected override int RunPart1()

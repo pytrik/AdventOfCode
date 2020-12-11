@@ -5,30 +5,6 @@ using System.Text.RegularExpressions;
 
 namespace AOC.Y2020
 {
-    public abstract class DayPassport : AOC.Y2020.Day<Passport, int>
-    {
-        public DayPassport(string day) : base(day)
-        {
-            this.split = new Regex(@"(?:\r\n){2}", RegexOptions.Compiled);
-        }
-
-        private static readonly Regex splitInner = new Regex(@"\s+", RegexOptions.Compiled);
-        protected override bool TryParseInput()
-        {
-            this.ParsedInput = this.RawInput
-                .Select(p => splitInner
-                    .Split(p).Aggregate(new Passport(), (p, i) =>
-                    {
-                        var item = i.Split(":");
-                        p.Add(item[0], item[1]);
-                        return p;
-                    }))
-                .ToArray();
-
-            return true;
-        }
-    }
-
     public class Passport : Dictionary<string, string>
     {
         private static List<PassportField> fields = new()
@@ -70,6 +46,18 @@ namespace AOC.Y2020
             foreach (var field in fields)
                 values.AddRange(new[] { this.ContainsKey(field.Key) ? this[field.Key] : "", BoolAsString(field.IsValid(this)) });
             return string.Join(",", values);
+        }
+
+        private static readonly Regex splitInner = new Regex(@"\s+", RegexOptions.Compiled);
+        public static Passport Parse(string input)
+        {
+            return splitInner.Split(input)
+                .Aggregate(new Passport(), (p, i) =>
+                {
+                    var item = i.Split(":");
+                    p.Add(item[0], item[1]);
+                    return p;
+                });
         }
     }
 }

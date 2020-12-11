@@ -5,23 +5,6 @@ using System.Text.RegularExpressions;
 
 namespace AOC.Y2020
 {
-    public abstract class DayBags : AOC.Y2020.Day<Bag, int>
-    {
-        protected BagsGraph Graph { get; set; }
-
-        protected DayBags(string day) : base(day)
-        {
-        }
-
-        protected override bool TryParseInput()
-        {
-            this.Graph = new BagsGraph();
-            this.Graph.Build(this.RawInput);
-            this.ParsedInput = this.Graph.AsArray();
-            return true;
-        }
-    }
-
     public class Bag
     {
         internal Bag(string name)

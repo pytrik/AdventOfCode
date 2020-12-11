@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace AOC
@@ -27,7 +28,6 @@ namespace AOC
         public string Year { get; }
         public string DayName { get; }
         public IEnumerable<string> RawInput { get; protected set; }
-        public bool HasParsedInput { get; protected set; }
         public Tin[] ParsedInput { get; protected set; }
         public Tout ExpectedTest1Result { get; set; }
         public Tout ExpectedTest2Result { get; set; }
@@ -37,18 +37,12 @@ namespace AOC
             var result = new List<TestResult<Tout>>();
 
             this.SetInputFrom("input_test1");
-            if (this.HasParsedInput)
-            {
-                var resultPart1 = this.TryRunPart(1);
-                result.Add(TestResult<Tout>.Create("Part 1", this.ExpectedTest1Result, resultPart1));
-            }
+            var resultPart1 = this.TryRunPart(1);
+            result.Add(TestResult<Tout>.Create("Part 1", this.ExpectedTest1Result, resultPart1));
 
             this.SetInputFrom("input_test2");
-            if (this.HasParsedInput)
-            {
-                var resultPart2 = this.TryRunPart(2);
-                result.Add(TestResult<Tout>.Create("Part 2", this.ExpectedTest2Result, resultPart2));
-            }
+            var resultPart2 = this.TryRunPart(2);
+            result.Add(TestResult<Tout>.Create("Part 2", this.ExpectedTest2Result, resultPart2));
 
             return result;
         }
@@ -66,7 +60,7 @@ namespace AOC
         {
             try
             {
-                if (!this.HasParsedInput)
+                if (this.ParsedInput == null || this.ParsedInput.Length == 0)
                     throw new NoParsedInputSetException($"No input was set for run of {this} part {partNr}");
 
                 if (partNr == 1)
@@ -82,15 +76,10 @@ namespace AOC
         protected abstract Tout RunPart1();
         protected abstract Tout RunPart2();
 
-        protected virtual bool TryParseInput()
+        protected virtual void SetParsedInput()
         {
             var converter = TypeConverter<Tin>();
-            if (converter != null)
-            {
-                this.ParsedInput = this.RawInput.Select(converter).ToArray();
-                return true;
-            }
-            return false;
+            this.ParsedInput = this.RawInput.Select(converter).ToArray();
         }
 
         protected void WriteOutputFile(string file, string data)
@@ -114,15 +103,12 @@ namespace AOC
         protected virtual void SetInputFrom(string file)
         {
             var content = GetInputFileContent(file);
-            var success = false;
             if (content != null)
             {
                 this.RawInput = split.Split(content)
                     .Where(line => !string.IsNullOrEmpty(line));
-                success = TryParseInput();
+                SetParsedInput();
             }
-
-            this.HasParsedInput = success;
         }
 
         protected bool IsValueType<T>() => typeof(T).IsValueType;
@@ -137,8 +123,22 @@ namespace AOC
             {
                 return (value) => (T)Convert.ChangeType(value, typeof(T));
             }
+            else
+            {
+                var type = typeof(T);
+                var converterMethod = type.GetMethods(BindingFlags.Static | BindingFlags.Public)
+                    .Where(method => method.Name == "Parse")
+                    .SingleOrDefault(method =>
+                    {
+                        var parameters = method.GetParameters();
+                        return parameters.Length == 1 && parameters.First().ParameterType == typeof(string);
+                    });
 
-            return null;
+                if (converterMethod == null)
+                    throw new NoConverterFoundException($"Could not find a public static method on type '{type}' with name 'Parse' that accepts exactly 1 argument of type string");
+
+                return (value) => (T)converterMethod.Invoke(null, new[] { value });
+            }
         }
 
         public override string ToString()

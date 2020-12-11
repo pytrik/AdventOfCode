@@ -5,7 +5,7 @@ namespace AOC.Y2020
         public IOperation Operation { get; set; }
         public int Argument { get; set; }
 
-        public static Instruction FromString(string input)
+        public static Instruction Parse(string input)
         {
             var parts = input.Split(' ');
             return new Instruction()

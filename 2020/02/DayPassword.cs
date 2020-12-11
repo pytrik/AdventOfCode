@@ -3,19 +3,6 @@ using System.Text.RegularExpressions;
 
 namespace AOC.Y2020
 {
-    public abstract class DayPassword : AOC.Y2020.Day<PasswordCheck, int>
-    {
-        public DayPassword(string day) : base(day)
-        {
-        }
-
-        protected override bool TryParseInput()
-        {
-            this.ParsedInput = this.RawInput.Select(PasswordCheckParser.Parse).ToArray();
-            return true;
-        }
-    }
-
     public class PasswordCheck
     {
         public int FirstNumber { get; set; }
@@ -35,12 +22,8 @@ namespace AOC.Y2020
             return new[] { this.Password[FirstNumber - 1], this.Password[SecondNumber - 1] }
                 .Count(ch => ch == RequiredCharacter) == 1;
         }
-    }
 
-    public class PasswordCheckParser
-    {
         private static readonly Regex regex = new Regex(@"(?<start>[0-9]+)-(?<end>[0-9]+)\s*(?<char>\w):\s*(?<password>\w+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         public static PasswordCheck Parse(string input)
         {
             var groups = regex.Match(input).Groups;

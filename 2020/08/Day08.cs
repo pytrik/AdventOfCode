@@ -12,12 +12,6 @@ namespace AOC.Y2020
             this.ExpectedTest2Result = 8;
         }
 
-        protected override bool TryParseInput()
-        {
-            this.ParsedInput = this.RawInput.Select(Instruction.FromString).ToArray();
-            return true;
-        }
-
         protected override long RunPart1()
         {
             var runner = new ProgramRunner(this.ParsedInput);
