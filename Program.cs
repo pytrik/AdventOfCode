@@ -6,7 +6,7 @@ namespace AOC.Run
     {
         static void Main(string[] args)
         {
-            var day = new AOC.Y2020.Day09();
+            var day = new AOC.Y2020.Day10();
             Console.WriteLine(day);
             foreach (var testResult in day.RunTests())
                 Console.WriteLine(testResult);
