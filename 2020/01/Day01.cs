@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace AOC.Y2020
 {
-    public class Day01 : Day<int, int>
+    public class Day01 : EnumerableDay<int, int>
     {
         public Day01() : base("01")
         {

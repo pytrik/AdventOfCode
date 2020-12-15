@@ -46,5 +46,12 @@ namespace AOC.Y2020
             }
             return result;
         }
+
+        public static BagsGraph Parse(IEnumerable<string> raw)
+        {
+            var graph = new BagsGraph();
+            graph.Build(raw);
+            return graph;
+        }
     }
 }

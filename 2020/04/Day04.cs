@@ -1,11 +1,9 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace AOC.Y2020
 {
-    public class Day04 : AOC.Y2020.Day<Passport, int>
+    public class Day04 : EnumerableDay<Passport, int>
     {
         public Day04() : base("04")
         {

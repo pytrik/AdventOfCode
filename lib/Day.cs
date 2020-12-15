@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace AOC
 
         public string Year { get; }
         public string DayName { get; }
-        public Tin[] ParsedInput { get; protected set; }
+        public Tin ParsedInput { get; protected set; }
         public Tout ExpectedTest1Result { get; set; }
         public Tout ExpectedTest2Result { get; set; }
 
@@ -73,7 +74,7 @@ namespace AOC
         {
             try
             {
-                if (this.ParsedInput == null || this.ParsedInput.Length == 0)
+                if (this.ParsedInput == null)
                     throw new NoParsedInputSetException($"No input was set for run of {this} part {partNr}");
 
                 if (partNr == 1)
@@ -89,10 +90,10 @@ namespace AOC
         protected abstract Tout RunPart1();
         protected abstract Tout RunPart2();
 
-        protected virtual Tin[] ParseInput(IEnumerable<string> raw)
+        protected virtual Tin ParseInput(IEnumerable<string> raw)
         {
             var converter = StringConverter.ToType<Tin>();
-            return raw.Select(converter).ToArray();
+            return converter(raw);
         }
 
         protected void WriteOutputFile(string file, string data)

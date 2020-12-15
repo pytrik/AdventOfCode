@@ -1,10 +1,9 @@
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace AOC.Y2020
 {
-    public abstract class DayTrees : AOC.Y2020.Day<bool[], int>
+    public abstract class DayTrees : EnumerableDay<bool[], int>
     {
         public DayTrees(string day) : base(day)
         {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AOC.Y2020
 {
-    public class Day08 : Day<Instruction, long>
+    public class Day08 : EnumerableDay<Instruction, long>
     {
         public Day08() : base("08")
         {

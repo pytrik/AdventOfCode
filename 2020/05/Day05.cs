@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace AOC.Y2020
 {
-    public class Day05 : AOC.Y2020.Day<Seat, int>
+    public class Day05 : EnumerableDay<Seat, int>
     {
         public Day05() : base("05")
         {

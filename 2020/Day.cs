@@ -6,4 +6,11 @@ namespace AOC.Y2020
         {
         }
     }
+
+    public abstract class EnumerableDay<Tin, Tout> : AOC.EnumerableDay<Tin, Tout>
+    {
+        public EnumerableDay(string day) : base("2020", day)
+        {
+        }
+    }
 }
